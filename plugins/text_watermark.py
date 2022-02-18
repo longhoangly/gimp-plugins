@@ -4,7 +4,7 @@
 import os
 import gimp
 import gimpcolor
-from gimpfu import *
+from gimpfu import pdb, register, PF_FILE, PF_TOGGLE, PF_STRING, PF_INT32, CLIP_TO_IMAGE, main
 
 
 def text_watermark(image, text, fontname, fontsize, has_gui):

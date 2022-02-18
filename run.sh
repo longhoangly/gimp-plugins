@@ -11,7 +11,7 @@ echo Starting add watermark process...
 
 # [Image + Debug]
 python3 -B add_watermark.py --images_dir "/Users/long.lyhoang/Downloads/Bep Co Vy/2022_02_16" \
-    --watermark_path "/Users/long.lyhoang/Downloads/Bep Co Vy/Watermark-4.png" \
+    --watermark_path "/Users/long.lyhoang/Downloads/Bep Co Vy/Watermark-5.png" \
     --debug_image "IMG_1755.JPG" \
     --debug 1 \
     --has_gui 1

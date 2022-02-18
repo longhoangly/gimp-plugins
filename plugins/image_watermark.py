@@ -16,33 +16,33 @@ def image_watermark(image, watermark, has_gui):
     # load watermark as a layer
     watermark_layer = pdb.gimp_file_load_layer(image_obj, watermark)
     pdb.gimp_image_add_layer(image_obj, watermark_layer, 0)
+    pdb.gimp_layer_set_opacity(watermark_layer, 80)
 
-    # scale watermark based on main image obj
-    rate = image_obj.height / (watermark_layer.height * 4)
-    print('scale rate {}'.format(rate))
+    # scale watermark
+    scale_rate = image_obj.height / (watermark_layer.height * 7)
+    print('scale rate {}'.format(scale_rate))
 
-    new_width = watermark_layer.width * rate
-    new_height = watermark_layer.height * rate
+    new_width = watermark_layer.width * scale_rate
+    new_height = watermark_layer.height * scale_rate
     print('new_width {}'.format(new_width))
     print('new_height {}'.format(new_height))
 
-    pdb.gimp_layer_scale(
-        watermark_layer, new_width, new_height, 0)
+    pdb.gimp_layer_scale(watermark_layer, new_width, new_height, 0)
 
-    # edit watermark opacity and offsets
-    pdb.gimp_layer_set_opacity(watermark_layer, 80)
-    pdb.gimp_layer_set_offsets(
-        watermark_layer, watermark_layer.width / 4, image_obj.height * 4 / 5)
-
-    # create background layer (opacity 50)
+    # add background layer (opacity 50)
     bg_water_layer = pdb.gimp_layer_new(image_obj, watermark_layer.width,
-                                        watermark_layer.height * 2 / 5,
+                                        watermark_layer.height,
                                         0, "bg_water_layer",
                                         50, 0)
     pdb.gimp_image_add_layer(image_obj, bg_water_layer, 1)
 
-    pdb.gimp_layer_set_offsets(
-        bg_water_layer, watermark_layer.width / 4, image_obj.height * 7 / 8)
+    # watermark and background offsets
+    width_offset = image_obj.width / 30
+    height_offset = image_obj.height - watermark_layer.height - width_offset
+
+    # edit watermark opacity and offsets
+    pdb.gimp_layer_set_offsets(watermark_layer, width_offset, height_offset)
+    pdb.gimp_layer_set_offsets(bg_water_layer, width_offset, height_offset)
 
     # set background color (opacity 100)
     foreground = gimpcolor.RGB(0, 0, 0)
