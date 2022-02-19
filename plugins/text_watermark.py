@@ -16,25 +16,30 @@ def text_watermark(image, text, fontname, fontsize, has_gui):
     watermark_layer = pdb.gimp_text_layer_new(
         image_obj, text, fontname, fontsize, 3)
     pdb.gimp_image_add_layer(image_obj, watermark_layer, 0)
-
     pdb.gimp_layer_set_opacity(watermark_layer, 80)
-    pdb.gimp_layer_set_offsets(
-        watermark_layer, 200, image_obj.height - watermark_layer.height + 200)
 
-    # create background layer (opacity 50)
-    bg_water_layer = pdb.gimp_layer_new(image_obj, watermark_layer.width,
-                                        200,
+    # watermark text color
+    text_color = gimpcolor.RGB(255, 255, 255)
+    pdb.gimp_text_layer_set_color(watermark_layer, text_color)
+
+    # watermark offsets
+    width_offset = image_obj.width / 30
+    height_offset = image_obj.height - watermark_layer.height - width_offset
+    pdb.gimp_layer_set_offsets(watermark_layer, width_offset, height_offset)
+
+    # add background layer (opacity 50)
+    bg_water_layer = pdb.gimp_layer_new(image_obj, watermark_layer.width * 1.1,
+                                        watermark_layer.height,
                                         0, "bg_water_layer",
                                         50, 0)
     pdb.gimp_image_add_layer(image_obj, bg_water_layer, 1)
-
     pdb.gimp_layer_set_offsets(
-        bg_water_layer, 200, image_obj.height - watermark_layer.height * 3 / 4 + 300)
+        bg_water_layer, width_offset * 0.8, height_offset)
 
-    # set background color (opacity 40)
-    foreground = gimpcolor.RGB(112, 128, 144)
+    # set background color (opacity 100)
+    foreground = gimpcolor.RGB(0, 0, 0)
     pdb.gimp_context_set_foreground(foreground)
-    pdb.gimp_bucket_fill(bg_water_layer, 0, 0, 40, 100, 0, 0, 0)
+    pdb.gimp_bucket_fill(bg_water_layer, 0, 0, 100, 200, 0, 0, 0)
 
     # display the image (GUI mode)
     if has_gui:

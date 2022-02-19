@@ -39,8 +39,6 @@ def image_watermark(image, watermark, has_gui):
     # watermark and background offsets
     width_offset = image_obj.width / 30
     height_offset = image_obj.height - watermark_layer.height - width_offset
-
-    # edit watermark opacity and offsets
     pdb.gimp_layer_set_offsets(watermark_layer, width_offset, height_offset)
     pdb.gimp_layer_set_offsets(bg_water_layer, width_offset, height_offset)
 
