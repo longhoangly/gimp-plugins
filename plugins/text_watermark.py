@@ -3,7 +3,7 @@
 
 import os
 import gimp
-import gimpcolor
+from plugin_base import *
 from gimpfu import pdb, register, PF_FILE, PF_TOGGLE, PF_STRING, PF_INT32, CLIP_TO_IMAGE, main
 
 
@@ -12,34 +12,32 @@ def text_watermark(image, text, fontname, fontsize, has_gui):
     # load main image
     image_obj = pdb.gimp_file_load(image, image)
 
-    # add text watermark (0 = GIMP_UNIT_PIXEL, 3 = GIMP_UNIT_POINT)
-    watermark_layer = pdb.gimp_text_layer_new(
-        image_obj, text, fontname, fontsize, 3)
-    pdb.gimp_image_add_layer(image_obj, watermark_layer, 0)
-    pdb.gimp_layer_set_opacity(watermark_layer, 80)
+    # add first text watermark (lower & left)
+    [watermark_layer, bg_water_layer] = add_text_watermark(
+        image_obj, text, fontname, fontsize, 0)
 
-    # watermark text color
-    text_color = gimpcolor.RGB(255, 255, 255)
-    pdb.gimp_text_layer_set_color(watermark_layer, text_color)
-
-    # watermark offsets
     width_offset = image_obj.width / 30
-    height_offset = image_obj.height - watermark_layer.height - width_offset
-    pdb.gimp_layer_set_offsets(watermark_layer, width_offset, height_offset)
+    height_offset = image_obj.height - watermark_layer.height - image_obj.width / 30
+    set_watermark_offsets(watermark_layer, bg_water_layer, width_offset,
+                          height_offset, 0)
 
-    # add background layer (opacity 50)
-    bg_water_layer = pdb.gimp_layer_new(image_obj, watermark_layer.width * 1.1,
-                                        watermark_layer.height,
-                                        0, "bg_water_layer",
-                                        50, 0)
-    pdb.gimp_image_add_layer(image_obj, bg_water_layer, 1)
-    pdb.gimp_layer_set_offsets(
-        bg_water_layer, width_offset * 0.8, height_offset)
+    # add second text watermark (central)
+    # [watermark_layer, bg_water_layer] = add_text_watermark(
+    #     image_obj, text, fontname, fontsize, 0)
 
-    # set background color (opacity 100)
-    foreground = gimpcolor.RGB(0, 0, 0)
-    pdb.gimp_context_set_foreground(foreground)
-    pdb.gimp_bucket_fill(bg_water_layer, 0, 0, 100, 200, 0, 0, 0)
+    # width_offset = image_obj.width * 12 / 30
+    # height_offset = image_obj.height / 2 - image_obj.width / 30
+    # set_watermark_offsets(watermark_layer, bg_water_layer, width_offset,
+    #                       height_offset, 0)
+
+    # add third text watermark (upper & right)
+    [watermark_layer, bg_water_layer] = add_text_watermark(
+        image_obj, text, fontname, fontsize, 0)
+
+    width_offset = image_obj.width - watermark_layer.width - image_obj.width / 30
+    height_offset = image_obj.width / 30
+    set_watermark_offsets(watermark_layer, bg_water_layer, width_offset,
+                          height_offset, 0)
 
     # display the image (GUI mode)
     if has_gui:

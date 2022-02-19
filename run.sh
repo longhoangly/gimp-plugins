@@ -32,14 +32,19 @@ echo Starting add watermark process...
 # [Text Watermark + Debug]
 python3 -B add_watermark.py --images_dir "/Users/long.lyhoang/Downloads/Bep Co Vy/2022_02_16" \
     --debug_image "IMG_1755.JPG" \
-    --watermark_text "Bếp Cô Vy" \
-    --font_name "FleurDeLeah" \
-    --font_size 300 \
+    --watermark_text "          Bếp Cô Vy\nTận tâm từng chiếc bánh" \
+    --font_name "TheNautigal" \
+    --font_size 150 \
     --debug 1 \
-    --has_gui 1
+    --has_gui 0
 
-#PatrickHand
-#Festive
-#Itim
+python3 -B add_watermark.py --images_dir "/Users/long.lyhoang/Downloads/Bep Co Vy" \
+    --debug_image "3d83a3ef7d22b17ce833.jpg" \
+    --watermark_text "          Bếp Cô Vy\nTận tâm từng chiếc bánh" \
+    --font_name "FleurDeLeah" \
+    --font_size 12 \
+    --debug 1 \
+    --has_gui 0
+
 #FleurDeLeah
 #TheNautigal

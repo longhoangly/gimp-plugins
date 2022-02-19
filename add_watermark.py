@@ -3,7 +3,7 @@
 
 import os
 import re
-from gimp.base import *
+from base import *
 from subprocess import *
 
 [images_dir, image_pattern, watermark_path, watermark_text, watermark_font_name,
