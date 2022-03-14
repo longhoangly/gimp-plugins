@@ -37,6 +37,7 @@ if not debug:
 
         else:
             print('Skip the image {}: already marked!\n'.format(image_path))
+
         proceeded_index += 1
 else:
 
