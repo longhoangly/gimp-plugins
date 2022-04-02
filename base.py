@@ -6,30 +6,30 @@ import getopt
 from subprocess import check_output
 
 
-def add_image_watermark(image_path, watermark_path, has_gui):
+def add_image_watermark(image_path, watermark_path, has_gui, gimp_path):
 
     run_mode = "RUN-INTERACTIVE" if has_gui else "RUN-NONINTERACTIVE"
     command = '(python-fu-image-watermark {} "{}" "{}" {})'.format(run_mode,
                                                                    image_path, watermark_path, has_gui)
-    execute_gimp_command(command, has_gui)
+    execute_gimp_command(command, has_gui, gimp_path)
 
 
-def add_text_watermark(image_path, watermark_text, watermark_font_name, watermark_font_size, has_gui):
+def add_text_watermark(image_path, watermark_text, watermark_font_name, watermark_font_size, has_gui, gimp_path):
 
     run_mode = "RUN-INTERACTIVE" if has_gui else "RUN-NONINTERACTIVE"
     command = '(python-fu-text-watermark {} "{}" "{}" "{}" {} {})'.format(run_mode,  image_path,
                                                                           watermark_text, watermark_font_name, watermark_font_size, has_gui)
-    execute_gimp_command(command, has_gui)
+    execute_gimp_command(command, has_gui, gimp_path)
 
 
-def execute_gimp_command(command, has_gui):
+def execute_gimp_command(command, has_gui, gimp_path):
 
     if(has_gui):
         output = check_output(
-            ['/Applications/GIMP-2.10.app/Contents/MacOS/gimp', '-b', command, '-b', '(gimp-quit 0)'])
+            [gimp_path, '-b', command, '-b', '(gimp-quit 0)'])
     else:
         output = check_output(
-            ['/Applications/GIMP-2.10.app/Contents/MacOS/gimp', '-i', '-b', command, '-b', '(gimp-quit 0)'])
+            [gimp_path, '-i', '-b', command, '-b', '(gimp-quit 0)'])
 
     print("\n-----------------")
     print("GIMP output...")
@@ -40,14 +40,14 @@ def get_opts(argv):
 
     try:
         opts, args = getopt.getopt(
-            argv, "h:", ["help", "images_dir=", "image_pattern=", "watermark_path=", "watermark_text=", "font_name=", "font_size=", "debug=", "debug_image=", "has_gui="])
+            argv, "h:", ["help", "images_dir=", "image_pattern=", "watermark_path=", "watermark_text=", "font_name=", "font_size=", "debug=", "debug_image=", "has_gui=", "gimp_path="])
 
     except getopt.GetoptError as err:
         print(err)
         usage()
 
     images_dir = ''
-    image_pattern = r'IMG_.[0-9]+.JPG$'
+    image_pattern = r'.*\..*'
     watermark_path = ''
     watermark_text = ''
     watermark_font_name = ''
@@ -55,6 +55,7 @@ def get_opts(argv):
     debug = 0
     debug_image = ''
     has_gui = 0
+    gimp_path = ''
 
     for opt, arg in opts:
         if opt in ("-h", "--help"):
@@ -77,9 +78,11 @@ def get_opts(argv):
             debug_image = arg
         elif opt == "--has_gui":
             has_gui = arg
+        elif opt == "--gimp_path":
+            gimp_path = arg
 
     print([images_dir, image_pattern, watermark_path, watermark_text,
-          watermark_font_name, watermark_font_size, debug, debug_image, has_gui])
+          watermark_font_name, watermark_font_size, debug, debug_image, has_gui, gimp_path])
 
     if ('' == images_dir) or (debug == '1' and '' == debug_image):
         print('Missing images_dir or debug_image (in case debug = 1)')
@@ -95,9 +98,9 @@ def get_opts(argv):
         has_gui = int(has_gui)
 
     print([images_dir, image_pattern, watermark_path, watermark_text,
-          watermark_font_name, watermark_font_size, debug, debug_image, has_gui])
+          watermark_font_name, watermark_font_size, debug, debug_image, has_gui, gimp_path])
 
-    return [images_dir, image_pattern, watermark_path, watermark_text, watermark_font_name, watermark_font_size, debug, debug_image, has_gui]
+    return [images_dir, image_pattern, watermark_path, watermark_text, watermark_font_name, watermark_font_size, debug, debug_image, has_gui, gimp_path]
 
 
 def usage():
@@ -107,6 +110,6 @@ def usage():
     # sys.argv[0] contains script name!
     print('Usage: {} --images_dir <images_dir> --image_pattern <image_pattern> --watermark_path <watermark_path> \n \
                     --watermark_text <watermark_text> --watermark_font_name <watermark_font_name> --watermark_font_size <watermark_font_size> \n \
-                    --debug <debug> --debug_image <debug_image> --has_gui <has_gui>\n'.format(sys.argv[0]))
+                    --debug <debug> --debug_image <debug_image> --has_gui <has_gui> --gimp_path <gimp_path>\n'.format(sys.argv[0]))
 
     sys.exit(0)

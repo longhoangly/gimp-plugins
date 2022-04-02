@@ -13,10 +13,10 @@ def image_watermark(image, watermark, has_gui):
     # load main image
     image_obj = pdb.gimp_file_load(image, image)
 
-    # load watermark as a layer
+    # load watermark as a layer (opacity 60)
     watermark_layer = pdb.gimp_file_load_layer(image_obj, watermark)
     pdb.gimp_image_add_layer(image_obj, watermark_layer, 0)
-    pdb.gimp_layer_set_opacity(watermark_layer, 80)
+    pdb.gimp_layer_set_opacity(watermark_layer, 60)
 
     # scale watermark
     scale_rate = image_obj.height / (watermark_layer.height * 7)
@@ -29,11 +29,11 @@ def image_watermark(image, watermark, has_gui):
 
     pdb.gimp_layer_scale(watermark_layer, new_width, new_height, 0)
 
-    # add background layer (opacity 50)
+    # add background layer (opacity 30)
     bg_water_layer = pdb.gimp_layer_new(image_obj, watermark_layer.width,
                                         watermark_layer.height,
                                         0, "bg_water_layer",
-                                        50, 0)
+                                        30, 0)
     pdb.gimp_image_add_layer(image_obj, bg_water_layer, 1)
 
     # watermark and background offsets
@@ -42,10 +42,10 @@ def image_watermark(image, watermark, has_gui):
     pdb.gimp_layer_set_offsets(watermark_layer, width_offset, height_offset)
     pdb.gimp_layer_set_offsets(bg_water_layer, width_offset, height_offset)
 
-    # set background color (opacity 100)
+    # set background color (opacity 50)
     foreground = gimpcolor.RGB(0, 0, 0)
     pdb.gimp_context_set_foreground(foreground)
-    pdb.gimp_bucket_fill(bg_water_layer, 0, 0, 100, 200, 0, 0, 0)
+    pdb.gimp_bucket_fill(bg_water_layer, 0, 0, 50, 200, 0, 0, 0)
 
     # display the image (GUI mode)
     if has_gui:
@@ -58,7 +58,7 @@ def image_watermark(image, watermark, has_gui):
 
     # save as new file
     head, tail = os.path.split(image)
-    new_file_name = os.path.join(head, 'Marked_' + tail)
+    new_file_name = os.path.join(head, 'ImgLogo_' + tail)
     print('Output file: {}'.format(new_file_name))
     pdb.gimp_file_save(image_obj, merged_layer, new_file_name, '?')
 
